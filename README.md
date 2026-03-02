@@ -1,33 +1,3 @@
-Hi Victoria,
-
-I took a shot at the Copy-Markdown feature for Imply docs. It took me about an hour to build this. I could enhance this given more time.
-
-Here's the process I followed to build this.
-
-I researched and look at the Copy-Markdown feature for a couple of other docs page, especially these two:
-
-- [https://langfuse.com/docs](https://langfuse.com/docs)
-- [https://tldraw.dev/docs/editor](https://tldraw.dev/docs/editor)
-
-Tried copying the markdown files from them and pasting it in editors to see their markdown structure. Depending on the docs management solution, markdown formats tend to vary.
-
-For example, Langfuse docs have its MDX source code intermixed with React components, JSX imports, and custom tags like <Callout>, <Tabs>, and <Video> that are meaningless outside their rendering framework.
-
-Tldraw being opensource project has gotten me the intuition that their docs would be open source as well. And as I digged more into their repository, I was right. I explored their copy-markdown feature implementation from github and decided to use that as the main inspiration for Imply copy-markdown.
-
-Once I had my examples, I jotted the feature spec and some design decisions (chrome extension vs )
-
-After I built the V1, I tested it out in chrome, copy-pasting a doc using the copy-markdown button and closely watching the output.
-
-I noticed some improvement areas. For example few Imply docs have tabs in the docs and that's where Langfuse docs came as inspiration. I then implemented specifications to copy tabs with proper labes when copying the markdwon.
-
-I also added a Table of Content (TOC) so LLMs have context of what they're diving into before reading the whole markdown. This would be token-cost friendly for agents using agentic search.
-
-At the end, I performed some security review on the code, especially against prompt injection tactics since that can be a real threat for this feature. Added a few solutions such as adding an LLM boundary that wraps the doc with a line that says this is a reference documentation, not an instruction.
-
-As I mentioned this is very hacky and built in a hour. I could improve it further spending more time on this.
-
----
 
 # Imply Docs — Copy Markdown
 
@@ -141,7 +111,7 @@ Most markdown renderers pass through `<details>` / `<summary>` natively. Convert
 - **MutationObserver** detects SPA navigation to re-inject the button on client-side page transitions, with ID-based deduplication to prevent double-injection
 - **CSS custom properties** from Docusaurus (`--ifm-color-primary`, etc.) ensure the button matches light/dark themes automatically
 - **No build tools** — vendored UMD bundles and plain JavaScript for simplicity
-- **Automated tests** via jsdom — 45 assertions covering every conversion rule, run with `npm test`
+- **Automated tests** via jsdom — 29 assertions covering every conversion rule, run with `npm test`
 
 ## Testing
 
@@ -149,28 +119,10 @@ The test suite uses jsdom to simulate a browser environment, loading the actual 
 
 ```
 npm install    # one-time: installs jsdom
-npm test       # runs 45 assertions
+npm test       # runs 29 assertions
 ```
 
-Tests cover: frontmatter extraction, code blocks with language annotations, admonitions, all-tab capture (including hidden panels), collapsible sections, image placeholders, internal link resolution, TOC generation with anchor links, TOC code-block exclusion, TOC omission on short pages, GFM tables, hidden element stripping, invisible Unicode sanitization, and LLM context boundary framing.
-
-## Security Considerations
-
-The extension output is designed for LLM consumption, which creates an indirect prompt injection surface. The following mitigations are in place:
-
-**Trust model:** The extension only runs on `docs.imply.io`, enforced by the `matches` pattern in `manifest.json`. It trusts visible page content from this origin.
-
-**Defense-in-depth:**
-
-- **Hidden element stripping** — Elements invisible to users (`[hidden]`, `[aria-hidden="true"]`, `<noscript>`, inline `display:none` / `visibility:hidden` / `opacity:0` / `font-size:0`) are removed from the DOM clone before Turndown conversion. Tab panels inside `.tabs-container` are exempted because the extension intentionally captures all tab content.
-- **Invisible Unicode sanitization** — Zero-width and invisible formatting characters (zero-width spaces, joiners, LTR/RTL marks, word joiners, BOM, soft hyphens, etc.) are stripped from the converted markdown output.
-- **LLM context framing** — A `type: reference-documentation` YAML field and a blockquote context note frame the output as informational content, not instructions.
-
-**Known limitations:**
-
-- CSS-class-based hiding (e.g., `.sr-only`) is not detected — only inline styles and HTML attributes are checked.
-- If visible page content on docs.imply.io is compromised, the extension passes it through as-is.
-- Context framing is a best-effort signal to LLMs, not a hard security boundary.
+Tests cover: frontmatter extraction, code blocks with language annotations, admonitions, all-tab capture (including hidden panels), collapsible sections, image placeholders, internal link resolution, TOC generation with anchor links, TOC code-block exclusion, TOC omission on short pages, and GFM tables.
 
 ## File Structure
 
