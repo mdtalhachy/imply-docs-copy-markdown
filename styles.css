@@ -1,0 +1,85 @@
+/* ---------------------------------------------------------------------------
+ * Imply Copy Markdown — Button Styles
+ *
+ * Uses Docusaurus CSS custom properties so the button automatically adapts
+ * to light/dark theme without any JS theme detection.
+ * --------------------------------------------------------------------------- */
+
+/* Header layout: flex row so the button sits inline with <h1> */
+.imply-copy-md-header {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+}
+
+.imply-copy-md-header h1 {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* Button — default (outlined) state */
+.imply-copy-md-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--ifm-color-primary);
+  border-radius: var(--ifm-global-radius, 4px);
+  background: var(--ifm-background-surface-color, transparent);
+  color: var(--ifm-color-primary);
+  font-family: var(--ifm-font-family-base, inherit);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease,
+    border-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.imply-copy-md-btn svg {
+  flex-shrink: 0;
+}
+
+/* Hover — filled primary */
+.imply-copy-md-btn:hover:not(:disabled) {
+  background: var(--ifm-color-primary);
+  color: #fff;
+}
+
+/* Focus ring for accessibility */
+.imply-copy-md-btn:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+/* Disabled during copy */
+.imply-copy-md-btn:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+
+/* Copied — green state */
+.imply-copy-md-btn--copied {
+  border-color: #2e7d32;
+  background: #2e7d32;
+  color: #fff;
+}
+
+.imply-copy-md-btn--copied:hover {
+  background: #2e7d32;
+  color: #fff;
+}
+
+/* Failed — subtle red state */
+.imply-copy-md-btn--failed {
+  border-color: #c62828;
+  background: #c62828;
+  color: #fff;
+}
+
+.imply-copy-md-btn--failed:hover {
+  background: #c62828;
+  color: #fff;
+}
