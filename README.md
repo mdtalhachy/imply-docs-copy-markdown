@@ -1,6 +1,8 @@
 
 # Imply Docs — Copy Markdown
 
+<video src="imply-copy-markdown-demo.mp4" controls width="100%"></video>
+
 A Chrome extension that adds a **Copy Markdown** button to every page on [docs.imply.io](https://docs.imply.io), extracting article content as clean, LLM-optimized markdown.
 
 ## What It Does
